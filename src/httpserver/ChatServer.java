@@ -7,7 +7,9 @@ package httpserver;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -151,14 +153,21 @@ public class ChatServer {
     }
     
     public void checkAvailability() {
+        // used to avoid java.util.ConcurrentModificationException
+        List<String> usersToRemove = new ArrayList<>();
+        
         this.users.keySet().forEach((key) -> {
-            int timeToLive = ChatServer.this.users.get(key);
+            int timeToLive = this.users.get(key);
             if (--timeToLive <= 0) {
                 // at least 8s no connection, remove client
-                this.logout(key);
+                usersToRemove.add(key);
             } else {
                 this.users.put(key, timeToLive);
             }
+        });
+        
+        usersToRemove.forEach((key) -> {
+            this.logout(key);
         });
         System.out.println("11111");
     }
