@@ -169,7 +169,6 @@ public class ChatServer {
         usersToRemove.forEach((key) -> {
             this.logout(key);
         });
-        System.out.println("11111");
     }
 
 }
