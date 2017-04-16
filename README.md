@@ -59,7 +59,7 @@ Response Body: M_SUCC + \<member list\> + “|” + \<message list\>
 
 * Notice:
 
-1. Sequence number is used to keep track of how many messages the user has received in the conversation, it functions similar to the sequence number in TCP connection
+1. Sequence number is used to keep track of how many messages the user has received in the conversation, it functions similarly to the sequence number in TCP connection
 
 2. Once connected, an sequence number will be sent by the server (see CONNECT)
 
