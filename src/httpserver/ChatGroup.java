@@ -37,6 +37,10 @@ public class ChatGroup {
         return this.members.containsKey(name);
     }
     
+    public int getChattingStatus(String name) {
+        return this.members.get(name);
+    }
+    
     public void leave(String name) {
     	this.disconnect(name);
     	this.members.remove(name);

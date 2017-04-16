@@ -51,23 +51,3 @@ function getReadyStateHandler(xmlHttpRequest, callback) {
 		}
 	};
 }
-
-/*
-	UPDATE_REQUEST
-*/
-
-/*
-	CONNECT_REQUEST
-*/
-
-/*
-	EXCHANGE_REQUEST
-*/
-
-/*
-	DISCONNECT_REQUEST
-*/
-
-/*
-	M_LOGGOUT
-*/

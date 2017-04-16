@@ -35,7 +35,7 @@ public class ChatServer {
     
     // Define initial time-to-live measured in 2 seconds
     private static final int INITIAL_TIME_TO_LIVE = 5;
-    
+
     private final ChatGroup group;
     private final Map<String, Integer> users;
     
@@ -50,35 +50,41 @@ public class ChatServer {
         int code = (int)(requestBody.charAt(0) - '0');
         
         try {
-            switch (code) {
-                case M_LOGIN:
-                    response.sendAjaxResponse(this.login(userName));
-                    break;
-                case M_UPDATE:
-                    int seq = Integer.parseInt(requestBody.substring(1, requestBody.length()));
-                    response.sendAjaxResponse(this.update(userName, seq));
-                    extendTimeToLive(userName);
-                    break;
-                case M_CONNECT:
-                    String peer = requestBody.substring(1, requestBody.length());
-                    response.sendAjaxResponse(this.connect(userName, peer));
-                    extendTimeToLive(userName);
-                    break;
-                case M_EXCHANGE:
-                    String msg = requestBody.substring(1, requestBody.length());
-                    response.sendAjaxResponse(this.exchange(userName, msg));
-                    extendTimeToLive(userName);
-                    break;
-                case M_DISCONNET:
-                    response.sendAjaxResponse(this.disconnect(userName));
-                    extendTimeToLive(userName);
-                    break;
-                case M_LOGOUT:
-                    response.sendAjaxResponse(this.logout(userName));
-                    break;
-                default:
-                    System.out.println("Unsupported request code!");
-                    break;
+            if (this.users.containsKey(userName) || code == M_LOGIN) {
+                // valid userName or LOGIN
+                switch (code) {
+                    case M_LOGIN:
+                        response.sendAjaxResponse(this.login(userName));
+                        break;
+                    case M_UPDATE:
+                        int seq = Integer.parseInt(requestBody.substring(1, requestBody.length()));
+                        response.sendAjaxResponse(this.update(userName, seq));
+                        extendTimeToLive(userName);
+                        break;
+                    case M_CONNECT:
+                        String peer = requestBody.substring(1, requestBody.length());
+                        response.sendAjaxResponse(this.connect(userName, peer));
+                        extendTimeToLive(userName);
+                        break;
+                    case M_EXCHANGE:
+                        String msg = requestBody.substring(1, requestBody.length());
+                        response.sendAjaxResponse(this.exchange(userName, msg));
+                        extendTimeToLive(userName);
+                        break;
+                    case M_DISCONNET:
+                        response.sendAjaxResponse(this.disconnect(userName));
+                        extendTimeToLive(userName);
+                        break;
+                    case M_LOGOUT:
+                        response.sendAjaxResponse(this.logout(userName));
+                        break;
+                    default:
+                        System.out.println("Unsupported request code!");
+                        break;
+                }
+            } else {
+                // Invalid userName
+                response.sendAjaxResponse(M_FAIL); 
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -101,20 +107,21 @@ public class ChatServer {
         String memberList, msgList;
         ChatMessageGroup chatMessageGroup;
         int groupKey = this.group.findGroup(name);
-        
-        memberList = (this.group.getMembers().isEmpty()) ? 
-                "" : new JSONObject(this.group.getMembers()).toString();
-        if (groupKey != -1) {
-            // the user has joined a converstation
+        int chattingStatus = this.group.getChattingStatus(name);
+
+        memberList = (this.group.getMembers().isEmpty())
+                ? "" : new JSONObject(this.group.getMembers()).toString();
+        if (seq >= 0) {
+            // the user has joined a converstation and received the initial seq
             chatMessageGroup = this.group.getChatGroups().get(groupKey);
-            msgList =  (chatMessageGroup.getMessages(seq).isEmpty()) ?
-                "" : new JSONArray(chatMessageGroup.getMessages(seq)).toString();
+            msgList = (chatMessageGroup.getMessages(seq).isEmpty())
+                    ? "" : new JSONArray(chatMessageGroup.getMessages(seq)).toString();
         } else {
             // the user hasn't joined any converstation
             msgList = "";
         }
-
-        return M_SUCC + memberList + "|" + msgList;
+        
+        return M_SUCC + chattingStatus + memberList + "|" + msgList;
     }
     
     private String connect(String name, String peer) {
@@ -122,13 +129,13 @@ public class ChatServer {
             int groupKey, seq;
             ChatMessageGroup chatMessageGroup;
             String memberList;
-            
+
             groupKey = this.group.findGroup(name);
             chatMessageGroup = this.group.getChatGroups().get(groupKey);
             seq = chatMessageGroup.getSequenceNumber();
             memberList = (chatMessageGroup.getMembers()).toString();
-            
-            return M_SUCC + seq + memberList;
+
+            return M_SUCC + seq + "|" + memberList;
         } else {
             return M_FAIL;
         }

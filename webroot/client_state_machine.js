@@ -11,8 +11,13 @@
 	var interface = document.querySelector('#interface');
 	var textarea = document.querySelector('#input_msg');
 	var send = document.querySelector('#send');
+	var logOut = document.querySelector('#logOut');
 	var conv = document.querySelector('#conv');
-	var status = document.querySelector('#status');
+	var info = document.querySelector('#info');
+
+	var connect = document.querySelector('#connect');
+	var update = document.querySelector('#update');
+	var leave = document.querySelector('#leave');
 /*
 	All the REQUEST CODE are shown here
 */
@@ -40,24 +45,28 @@
 	All the possible utilities are here
 */
 	var selfName;
-	var state = S_OFFLINE;
 	var data;
 	var memberJson;
 	var msgJson;
+	var groupMemberJson;
 	var seq = -1;
+	var setIn;
+	var chattingStatus = 0;
+	var state = S_OFFLINE;
+	var chatBoxNbr = 0;
 /*
 	Web element event call
 */
-	if (state == S_OFFLINE){
-		submit_button.addEventListener('click', function(){
+	submit_button.addEventListener('click', function(){
+		if (state == S_OFFLINE){
 			sendRequest(usernameBox.value, M_LOGIN, function (responseText) {
 				if (responseText[0] == M_FAIL){
 					loginMsg.innerHTML = "The userName is used, try another one!";
 				}else if (responseText[0] == M_SUCCESS){
 					loginMsg.innerHTML = "Logging you in..."
-					responseText = responseText.substring(1);
+					responseText = responseText.substring(2);
 					selfName = usernameBox.value;
-					console.log(responseText);
+					//console.log(responseText);
 					//login success, shifting page
 					login.style.display = 'none';
 					interface.style.display = 'block';
@@ -70,42 +79,32 @@
 							addMemberBox(peer);
 						}
 					}
-					state = S_LOGGEDIN;
 					seq = -1;
-					var update = setInterval("sendRequest(selfName, M_UPDATE + seq.toString(), function (responseText) {\
-						clearMemberBox();\
-						responseText = responseText.substring(1);\
-						data = responseText.split('|');\
-						if (data[0].length != 0){\
-							memberJson = JSON.parse(data[0]);\
-							for (var peer in memberJson){\
-								if (peer != selfName){\
-									addMemberBox(peer);\
-								}\
-							}\
-						}\
-					});", 500);
+					setIn = setInterval("update.click();", 500);
+					state = S_LOGGEDIN;
 				}
 			});
-		});
-	}
-
-	if (state == S_LOGGEDIN){
-
-	}
-
-	if (state == S_CHATTING){
-		//update
-		//connect
-		//exchange
-		//disconnect
-		//logout
-	}
-
-	// setInterval(sendRequest())
+		}
+	});
 
 	send.addEventListener('click', function () {
-		addChattingBox(selfName, textarea.value, "self");
+		if (state == S_CHATTING){
+			sendRequest(selfName, M_EXCHANGE + textarea.value, function (responseText) {
+				//console.log('send!');
+			});
+		}
+	});
+
+	logOut.addEventListener('click',function(){
+		if (state == S_LOGGEDIN || state == S_CHATTING){
+			sendRequest(selfName, M_LOGOUT, function (responseText) {
+				loginMsg.innerHTML = "Username:";
+				login.style.display = 'block';
+				interface.style.display = 'none';
+				clearInterval(setIn);
+				state = S_OFFLINE;
+			});
+		}
 	});
 
 /*
@@ -132,6 +131,22 @@
 		//create a new member box
 		var userDiv = document.createElement("div");
 		userDiv.setAttribute("id", user);
+		userDiv.addEventListener('click', function () {
+			if (state == S_LOGGEDIN){
+				sendRequest(selfName, M_CONNECT + user, function(responseText){
+					var code = responseText[0];
+					if (code == M_FAIL){
+						info.innerHTML = "The user is too busy, maybe chat later!";
+					}else if(code == M_SUCCESS){
+						info.innerHTML = "You are chatting with " + user;
+						seq = responseText[1];
+						//console.log(seq);
+					}
+				});
+			}else{
+				info.innerHTML = "You have to leave the current conversation first!";
+			}
+		});
 		peerUser.appendChild(userDiv);
 		//setting the style format for the div element
 		userDiv.style.height = '7%';
@@ -142,6 +157,7 @@
 		userDiv.style.borderStyle = "none none solid none";
 		userDiv.style.borderColor = 'lightgrey';
 		userDiv.innerHTML = "" + user;
+
 	}
 	//delete the logged out user
 	var clearMemberBox = function(){
@@ -155,6 +171,8 @@
 	//add a chatting box whenever there is a new message
 	var addChattingBox = function(user, message, source){
 		var userDiv = document.createElement("div");
+		userDiv.setAttribute("id", chatBoxNbr.toString());
+		chatBoxNbr ++;
 		conv.appendChild(userDiv);
 		userDiv.style.marginTop = '3%';
 		userDiv.style.marginRight = '2%';
@@ -176,5 +194,70 @@
 	}
 	//clear the chatting column when a conversation ends.
 	var clearChattingBox = function () {
-
+		for (var i = 0; i <= chatBoxNbr; i++){
+			var userDiv = document.getElementById(i.toString());
+			conv.removeChild(userDiv);
+		}
 	}
+
+	update.addEventListener('click', function () {
+		if (state == S_CHATTING || state == S_LOGGEDIN){
+			sendRequest(selfName, M_UPDATE + seq.toString(), function (responseText) {
+				if (responseText[0] == M_SUCCESS){
+					if (state == S_CHATTING && responseText[1] == '0'){
+							seq = -1;
+							state = S_LOGGEDIN;
+							info.innerHTML = "What are you waiting for?";
+					}
+					if (state == S_LOGGEDIN && responseText[1] == '1'){
+							seq = 0;
+							state = S_CHATTING;
+							info.innerHTML = "Chatting";
+					}
+					// console.log(seq);
+					clearMemberBox();
+					responseText = responseText.substring(2);
+					data = responseText.split('|');
+					if (data[0].length != 0){
+						memberJson = JSON.parse(data[0]);
+						for (var peer in memberJson){
+							if (peer != selfName){
+								addMemberBox(peer);
+							}
+						}
+					}
+					if (data[1].length != 0){
+						msgJson = JSON.parse(data[1]);
+						for (var i = 0; i < msgJson.length; i++){
+							if (msgJson[i][0].toString() == selfName){
+								addChattingBox(selfName, msgJson[i][1].toString(), "self");
+								seq++;
+							}else{
+								addChattingBox(msgJson[i][0].toString(), msgJson[i][1].toString(), "peer");
+								seq++;
+							}
+						}
+					}
+				}else if(responseText[0] == M_FAIL){
+					logOut.click();
+				}
+				// if (data[1].length != 0){
+				// 	msgJson = JSON.parse(data[1]){
+				// 	}
+				// }
+			});
+		}
+	});
+
+	leave.addEventListener('click', function () {
+		if (state == S_CHATTING){
+			sendRequest(selfName, M_DISCONNECT, function(responseText){
+				if (responseText == M_SUCCESS){
+					info.innerHTML = "Disconnected from the current group!";
+					state = S_LOGGEDIN;
+					seq = -1;
+					clearChattingBox();
+				}
+			});
+		}
+	});

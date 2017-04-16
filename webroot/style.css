@@ -6,7 +6,7 @@ body{
 	background-color: #D8FFFC;
 	height: 100%;
 	margin:0%;
-/*	overflow:hidden;*/
+	overflow:hidden;
 	font-family: Arial;
 }
 
@@ -76,7 +76,7 @@ textarea{
 	background-color: #DFE6FF;
 }
 
-#status{
+#info{
 	border: 1px;
 	border-style: none none solid none;
 	border-color: lightgrey;
@@ -115,16 +115,23 @@ textarea{
 
 #send{
 	float: right;
-	height: 13%;
+	height: 12%;
 	font-size: 16pt;
 	background-color:#DFE6FF;
 	outline: none;
-	margin-right: 2%;
 }
 
 #logOut{
 	float: right;
-	height: 13%;
+	height: 12%;
+	font-size: 16pt;
+	background-color:#DFE6FF;
+	outline: none;
+}
+
+#leave{
+	float:right;
+	height: 12%;
 	font-size: 16pt;
 	background-color:#DFE6FF;
 	outline: none;
