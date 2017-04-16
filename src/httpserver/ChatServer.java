@@ -107,8 +107,8 @@ public class ChatServer {
         if (groupKey != -1) {
             // the user has joined a converstation
             chatMessageGroup = this.group.getChatGroups().get(groupKey);
-            msgList =  (chatMessageGroup.getMessage(seq).isEmpty()) ?
-                "" : new JSONArray(chatMessageGroup.getMessage(seq)).toString();
+            msgList =  (chatMessageGroup.getMessages(seq).isEmpty()) ?
+                "" : new JSONArray(chatMessageGroup.getMessages(seq)).toString();
         } else {
             // the user hasn't joined any converstation
             msgList = "";
@@ -119,10 +119,16 @@ public class ChatServer {
     
     private String connect(String name, String peer) {
         if (this.group.connect(name, peer)) {
-            int groupKey = this.group.findGroup(name);
-            ChatMessageGroup chatMessageGroup = this.group.getChatGroups().get(groupKey);
-            int seq = chatMessageGroup.getSequenceNumber();
-            return M_SUCC + seq;
+            int groupKey, seq;
+            ChatMessageGroup chatMessageGroup;
+            String memberList;
+            
+            groupKey = this.group.findGroup(name);
+            chatMessageGroup = this.group.getChatGroups().get(groupKey);
+            seq = chatMessageGroup.getSequenceNumber();
+            memberList = (chatMessageGroup.getMembers()).toString();
+            
+            return M_SUCC + seq + memberList;
         } else {
             return M_FAIL;
         }

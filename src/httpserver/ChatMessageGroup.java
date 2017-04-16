@@ -21,12 +21,10 @@ public class ChatMessageGroup {
     
     private final List<String> members;
     private final List<List<String>> messages;
-    private int numOfMessages;
     
     public ChatMessageGroup() {
         this.members = new ArrayList<>();
         this.messages = new ArrayList<>();
-        this.numOfMessages = 0;
     }
     
     public boolean isMember(String name) {
@@ -37,13 +35,16 @@ public class ChatMessageGroup {
         return this.members.size();
     }
     
-    public String getFirstMember() {
-        return this.members.get(0);
+    public List<String> getMembers() {
+        return this.members;
     }
     
     public boolean addMember(String name) {
         if (this.members.size() < MAXIMUM_SIZE) {
             this.members.add(name);
+            this.addMessage(
+                "SYSTEM MESSAGE! SYSTEM MESSAGE!", 
+                name + " joined, welcome!");
             return true;
         } else {
             return false;
@@ -52,20 +53,22 @@ public class ChatMessageGroup {
     
     public void removeMember(String name) {
         this.members.remove(name);
+        this.addMessage(
+                "SYSTEM MESSAGE! SYSTEM MESSAGE!", 
+                name + " left");
     }
     
     public int getSequenceNumber() {
-        return this.numOfMessages;
+        return this.messages.size() - 1;
     }
     
     public void addMessage(String name, String msg) {
         this.messages.add(Arrays.asList(name, msg));
-        this.numOfMessages++;
     }
     
-    public List<List<String>> getMessage(int seq) {
-        if (seq <= this.numOfMessages && seq >= 0) {
-            return this.messages.subList(seq + 1,this.numOfMessages + 1);
+    public List<List<String>> getMessages(int seq) {
+        if (seq <= this.messages.size() && seq >= 0) {
+            return this.messages.subList(seq, this.messages.size());
         } else {
             // illegal sequence number
             return null;

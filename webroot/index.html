@@ -1,14 +1,41 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
-	<title>Getting Started with AJAX using JAVA</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
-	<meta http-equiv="Pragma" content="no-cache"/>
-	<meta http-equiv="Expires" content="0"/>
-	<script type="text/javascript" language="javascript" src="ajax.js"></script>
+	<title>TEST Messenger</title>
 </head>
 <body>
-	<div>Getting Started with AJAX using JAVA: Hello World!</div>
-	<div id="hello"><button type="button" onclick="makeRequest()">Say Hello!</button></div>
+<div id="login" align="center">
+	<h2 id="login_message">Username:</h2>
+	<input id="username" type="text">
+	<button id="submit">submit</button>
+</div>
+<div id="interface">
+	<div id="active_users">
+		<div id="self_user">
+
+		</div>
+		<div id="peer_user">
+
+		</div>
+	</div>
+	<div id="message">
+		<div id="in_msg">
+			<div id = "status">
+				Find someone to chat!
+			</div>
+			<div id = "conv">
+
+			</div>
+		</div>
+		<div id="out_msg">
+			<textarea id="input_msg"></textarea>
+			<button id="logOut">LOGOUT</button>
+			<button id="send">SEND</button>
+		</div>
+	</div>
+</div>
 </body>
+<link rel="stylesheet" type="text/css" href="style.css">
+<script type="text/javascript" src="chat_client_class.js"></script>
+<script type="text/javascript" src="client_state_machine.js"></script>
 </html>

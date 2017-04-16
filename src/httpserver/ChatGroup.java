@@ -90,7 +90,7 @@ public class ChatGroup {
             this.members.put(name, S_ALONE);
             if (chatMessageGroup.getNumOfMembers() == 1) {
                 // peer may be the only one left as well...
-                String peer = chatMessageGroup.getFirstMember();
+                String peer = chatMessageGroup.getMembers().get(0);
                 this.members.put(peer, S_ALONE);
                 this.chatGroups.remove(groupKey);
             }

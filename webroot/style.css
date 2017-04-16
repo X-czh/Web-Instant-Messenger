@@ -1,0 +1,133 @@
+html{
+	height: 100%;
+}
+
+body{
+	background-color: #D8FFFC;
+	height: 100%;
+	margin:0%;
+/*	overflow:hidden;*/
+	font-family: Arial;
+}
+
+textarea{
+	background: none;
+	width: 99%;
+	height: 85%;
+	font-size: 16pt;
+	border-style: none;
+	outline: none;
+	resize: none;
+}
+
+#login{
+	display: block;
+	margin-top: 20%;
+}
+
+#username{
+	outline: none;
+	width: 15%;
+	font-size: 16pt;
+}
+
+#submit{
+	font-size: 16pt;
+}
+
+#interface{
+	display:none;
+	height: 100%;
+}
+
+#active_users{
+	border: 1px;
+	border-style: solid none solid solid;
+	border-color: lightgrey;
+	width: 29%;
+	height: 100%;
+	float: left;
+	background-color: #D8FFFC;
+}
+
+#self_user{
+	height: 5%;
+	margin-top: 5%;
+	text-align: center;
+	font-size: 18pt;
+	border: 1px;
+	border-style: none none solid none;
+	border-color: lightgrey;
+}
+
+#peer_user{
+	height: 92%;
+	border-style: none;
+	overflow-y: scroll;
+}
+
+#message{
+	border: 1px;
+	border-style: solid none none solid;
+	border-color: lightgrey;
+	width: 70%;
+	height: 100%;
+	float: left;
+	background-color: #DFE6FF;
+}
+
+#status{
+	border: 1px;
+	border-style: none none solid none;
+	border-color: lightgrey;
+	margin-top:2%;
+	text-align: center;
+	font-size: 18pt;
+	height: 7.8%;
+}
+
+#conv{
+	border: 1px;
+	border-style: none;
+	border-color: lightgrey;
+	text-align: center;
+	font-size: 18pt;
+	height: 92%;
+	overflow: auto;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+#in_msg{
+	border: 1px;
+	border-style: none none solid none;
+	border-color: lightgrey;
+	height: 65%;
+}
+
+#out_msg{
+	border: 1px;
+	border-style: none none solid none;
+	border-color: lightgrey;
+	height: 32%;
+	background-color: #DFE6FF;
+}
+
+#send{
+	float: right;
+	height: 13%;
+	font-size: 16pt;
+	background-color:#DFE6FF;
+	outline: none;
+	margin-right: 2%;
+}
+
+#logOut{
+	float: right;
+	height: 13%;
+	font-size: 16pt;
+	background-color:#DFE6FF;
+	outline: none;
+}
+
+
