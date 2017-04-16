@@ -59,7 +59,7 @@ Response Body: M_SUCC + \<member list\> + “|” + \<message list\>
 
 * Notice:
 
-1. Sequence number is used to keep track of how many messages the user has received in the conversation
+1. Sequence number is used to keep track of how many messages the user has received in the conversation, it functions similar to the sequence number in TCP connection
 
 2. Once connected, an sequence number will be sent by the server (see CONNECT)
 
@@ -78,7 +78,7 @@ URI: chat.do/\<user name\>
 Request Body: M_CONNECT + \<peer name\>
 
 #### Resonse
-Response Body: M_SUCC + \<sequence number\> if success, M_FAIL if group maximum size reached
+Response Body: M_SUCC + \<sequence number\> + \<member list of the conversation\> if success, M_FAIL if group maximum size reached
 
 ### EXCHANGE
 #### Request
