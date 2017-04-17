@@ -43,7 +43,7 @@ public class ChatMessageGroup {
         if (this.members.size() < MAXIMUM_SIZE) {
             this.members.add(name);
             this.addMessage(
-                "SYSTEM MESSAGE! SYSTEM MESSAGE!", 
+                "SYSTEM MESSAGE", 
                 name + " joined, welcome!");
             return true;
         } else {
@@ -54,7 +54,7 @@ public class ChatMessageGroup {
     public void removeMember(String name) {
         this.members.remove(name);
         this.addMessage(
-                "SYSTEM MESSAGE! SYSTEM MESSAGE!", 
+                "SYSTEM MESSAGE", 
                 name + " left");
     }
     

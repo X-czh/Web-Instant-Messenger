@@ -35,7 +35,10 @@ public class ChatServer {
     
     // Define initial time-to-live measured in 2 seconds
     private static final int INITIAL_TIME_TO_LIVE = 5;
-
+    
+    // Define each member's chatting status code
+    private static final int S_ALONE = 0, S_TALKING = 1;
+    
     private final ChatGroup group;
     private final Map<String, Integer> users;
     
@@ -111,7 +114,7 @@ public class ChatServer {
 
         memberList = (this.group.getMembers().isEmpty())
                 ? "" : new JSONObject(this.group.getMembers()).toString();
-        if (seq >= 0) {
+        if (seq >= 0 && chattingStatus == S_TALKING) {
             // the user has joined a converstation and received the initial seq
             chatMessageGroup = this.group.getChatGroups().get(groupKey);
             msgList = (chatMessageGroup.getMessages(seq).isEmpty())
@@ -120,7 +123,7 @@ public class ChatServer {
             // the user hasn't joined any converstation
             msgList = "";
         }
-        
+        System.out.println(msgList);
         return M_SUCC + chattingStatus + memberList + "|" + msgList;
     }
     

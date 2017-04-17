@@ -53,7 +53,7 @@
 	var setIn;
 	var chattingStatus = 0;
 	var state = S_OFFLINE;
-	var chatBoxNbr = 0;
+	var chatBoxNbr = 10000;
 /*
 	Web element event call
 */
@@ -96,13 +96,29 @@
 	});
 
 	logOut.addEventListener('click',function(){
-		if (state == S_LOGGEDIN || state == S_CHATTING){
+		if (state == S_LOGGEDIN){
 			sendRequest(selfName, M_LOGOUT, function (responseText) {
-				loginMsg.innerHTML = "Username:";
-				login.style.display = 'block';
-				interface.style.display = 'none';
-				clearInterval(setIn);
-				state = S_OFFLINE;
+				if (responseText == M_SUCCESS){
+					loginMsg.innerHTML = "Username:";
+					login.style.display = 'block';
+					interface.style.display = 'none';
+					clearInterval(setIn);
+					clearMemberBox();
+					clearChattingBox();
+					state = S_OFFLINE;
+				}
+			});
+		}else if(state == S_CHATTING){
+			leave.click();
+			sendRequest(selfName, M_LOGOUT, function (responseText) {
+				if (responseText == M_SUCCESS){
+					loginMsg.innerHTML = "Username:";
+					login.style.display = 'block';
+					interface.style.display = 'none';
+					clearInterval(setIn);
+					clearMemberBox();
+					state = S_OFFLINE;
+				}
 			});
 		}
 	});
@@ -194,10 +210,11 @@
 	}
 	//clear the chatting column when a conversation ends.
 	var clearChattingBox = function () {
-		for (var i = 0; i <= chatBoxNbr; i++){
+		for (var i = 10000; i < chatBoxNbr; i++){
 			var userDiv = document.getElementById(i.toString());
 			conv.removeChild(userDiv);
 		}
+		chatBoxNbr = 10000;
 	}
 
 	update.addEventListener('click', function () {
@@ -205,9 +222,10 @@
 			sendRequest(selfName, M_UPDATE + seq.toString(), function (responseText) {
 				if (responseText[0] == M_SUCCESS){
 					if (state == S_CHATTING && responseText[1] == '0'){
-							seq = -1;
+							info.innerHTML = "Disconnected from the current group!";
 							state = S_LOGGEDIN;
-							info.innerHTML = "What are you waiting for?";
+							seq = -1;
+							clearChattingBox();
 					}
 					if (state == S_LOGGEDIN && responseText[1] == '1'){
 							seq = 0;
