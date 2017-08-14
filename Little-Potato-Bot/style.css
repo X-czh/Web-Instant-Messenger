@@ -1,0 +1,47 @@
+html{
+    height: 100%;
+}
+
+p{
+    margin-top: 0%;
+}
+
+body{
+    background-color: #FBBBFF;
+    height: 100%;
+    padding-left: 15%;
+    padding-right: 15%;
+    overflow: hidden;
+}
+
+#chat_window{
+    height: 30%;
+    width: 100%;
+    border-style: solid;
+    border-width: thin;
+}
+
+textarea{
+    width: 98%;
+    height: 80%;
+    font-size: 16pt;
+    border-style: none;
+    background-color: #FBBBFF;
+    resize: none;
+    outline: none;
+}
+
+#send{
+    font-size: 16pt;
+    float: right;
+    height: 14%;
+}
+
+#response_window{
+    margin-top: 5%;
+    border-style: inset;
+    border-width: medium;
+    height: 30%;
+    width: 100%;
+    font-size: 16pt;
+}
