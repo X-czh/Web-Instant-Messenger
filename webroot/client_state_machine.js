@@ -4,7 +4,7 @@
 	var submit_button = document.querySelector('#submit');
 	var usernameBox = document.querySelector('#username');
 	var login = document.querySelector('#login');
-	var loginMsg = document.querySelector('#login_message')
+	var loginMsg = document.querySelector('#login_message');
 	var userColumn = document.querySelector('#active_users');
 	var selfUser = document.querySelector('#self_user');
 	var peerUser = document.querySelector('#peer_user');
